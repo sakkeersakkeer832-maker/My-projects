@@ -40,7 +40,7 @@ HTML_LAYOUT ="""
        h1, .heading {
             color:#b5f3f4; /* pure white heading*/
             font-size: 2.5rem;
-            text-weight: 700;
+            font-weight: 700;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
             margin-bottom: 20px;
             text-align: center;
@@ -143,7 +143,7 @@ def run_att():
     return redirect('/')
 
     #excel file cloud il download aayi kittaan ulla code
-@app.route('/open-excel', methods=['GET'])
+@app.route('/open-excel', methods=["GET"])
 def open_excel():
     if os.path.exists(EXCEL_FILE):
         #CLOUD serveril (Linux) os.startfile work aakilla, so user-inu direct file download aakum
