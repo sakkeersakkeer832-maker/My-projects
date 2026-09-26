@@ -1,9 +1,9 @@
-from flask import Flask, render_template_string, redirect
+from flask import Flask, render_template_string, redirect, send_file
 import subprocess
 import os
 
 app = Flask(__name__)
-
+app.secret_key = "secret_key_for_flask" # Flash messages-inulla key
 #ividenn run cheyyanolla file name kodukkunnu
 
 REGISTER_FILE ="i.py"
@@ -121,9 +121,12 @@ def home():
 @app.route('/run-reg', methods=['POST'])
 def run_reg():
     if os.path.exists(REGISTER_FILE):
-        subprocess.Popen(["python", REGISTER_FILE])
+        try:
+           subprocess.Popen(["python", REGISTER_FILE])
+        except Exception as e:
+            print(f"Error executing {REGISTER_FILE}: {e}")
     else:
-        print(f"Error: {REGISTER_FILE} not found check your code!")
+        print(f"Error: {REGISTER_FILE} not found!")
     return redirect('/')
 
 
@@ -131,19 +134,22 @@ def run_reg():
 @app.route('/run-att', methods=['POST'])
 def run_att():
     if os.path.exists(ATTENDANCE_FILE):
-        subprocess.Popen(["python", ATTENDANCE_FILE])
+        try:
+          subprocess.Popen(["python", ATTENDANCE_FILE])
+        except Exception as e:
+            print(f"Error executing {ATTENDANCE_FILE}: {e}")
     else:
-        print(f"Error: {ATTENDANCE_FILE} not found check your code!")
+        print(f"Error: {ATTENDANCE_FILE} not found!")
     return redirect('/')
 
-    #edutha attendance excelil open cheyyunnu
-@app.route('/open-excel', methods=['POST'])
+    #excel file cloud il download aayi kittaan ulla code
+@app.route('/open-excel', methods=['GET'])
 def open_excel():
     if os.path.exists(EXCEL_FILE):
-        os.startfile(EXCEL_FILE)
+        #CLOUD serveril (Linux) os.startfile work aakilla, so user-inu direct file download aakum
+        return send_file(EXCEL_FILE, as_attachment=True)
     else:
-        print(f"Error: {EXCEL_FILE} not found check your code!")
-    return redirect('/')
+      return f"<h3>Error: {EXCEL_FILE} not found on server!</h3>", 404
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)
